@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, Animated } from 'react-native';
+import { View, Text, Animated, Easing } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Video from 'react-native-video';
 
@@ -12,13 +12,22 @@ function App() {
         Animated.timing(scaleAnim, {
           toValue: 1,
           duration: 1000,
+          easing:Easing.inOut(Easing.ease),
           useNativeDriver: true,
         }),
         Animated.timing(scaleAnim, {
           toValue: 1,
           duration: 1000,
+          easing:Easing.inOut(Easing.ease),
           useNativeDriver: true,
         }),
+        Animated.timing(scaleAnim,{
+          toValue:0.5,
+          duration:1000,
+          
+          easing:Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        })
       ]),
     ).start();
   }, []);
