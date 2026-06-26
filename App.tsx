@@ -1,4 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
+import Toast from 'react-native-toast-message';
+import { toastConfig } from "./components/CustomeToast.js"
+
 import {
   Animated,
   Easing,
@@ -14,11 +17,16 @@ import {
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import Video from 'react-native-video';
 import RemixIcon from 'react-native-remix-icon';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 function App() {
   const scaleAnim = useRef(new Animated.Value(0.5)).current;
   const [assistant, setAssistant] = useState('');
 
+  useEffect(() => {
+    console.log('====================================');
+    console.log(assistant);
+    console.log('====================================');
+  }, [assistant])
   useEffect(() => {
     Animated.loop(
       Animated.sequence([
@@ -45,8 +53,25 @@ function App() {
     ).start();
   }, [scaleAnim]);
 
+  async function HandleContinue() {
+    console.log("clicked");
+
+    Toast.show({
+      type: "success",
+      text1: "Assistant Saved",
+      text2: "you can any time change it from home page"
+    })
+    // try{
+    //  await AsyncStorage.setItem("assistant",assistant)
+    // }
+    // catch(e){
+
+    // }
+  }
+
   return (
     <SafeAreaProvider>
+
       <View style={styles.root}>
         <Video
           source={require('./assets/background/silk.mp4')}
@@ -116,6 +141,7 @@ function App() {
                   </View>
 
                   <TouchableOpacity
+                    onPress={HandleContinue}
                     activeOpacity={0.85}
                     style={styles.continueButton}
                   >
@@ -128,6 +154,11 @@ function App() {
           </KeyboardAvoidingView>
         </SafeAreaView>
       </View>
+      <Toast
+        config={toastConfig}
+        position="top"
+        topOffset={50}
+      />
     </SafeAreaProvider>
   );
 }
