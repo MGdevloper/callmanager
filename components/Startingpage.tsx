@@ -21,7 +21,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 function Startingpage({navigation}:any) {
   const scaleAnim = useRef(new Animated.Value(0.5)).current;
   const [assistant, setAssistant] = useState('');
-
+  const assistantRef=useRef<TextInput>(null)
   useEffect(() => {
     Animated.loop(
       Animated.sequence([
@@ -49,6 +49,11 @@ function Startingpage({navigation}:any) {
   }, [scaleAnim]);
 
   async function HandleContinue() {
+
+    if(assistant.length==0){
+      assistantRef.current?.focus()
+      return
+    }
     try {
 
         await AsyncStorage.setItem("Assistant",assistant)
@@ -126,6 +131,7 @@ function Startingpage({navigation}:any) {
                     </View>
 
                     <TextInput
+                      ref={assistantRef}
                       maxLength={12}
                       value={assistant}
                       onChangeText={setAssistant}
@@ -138,7 +144,7 @@ function Startingpage({navigation}:any) {
                   </View>
 
                   <TouchableOpacity
-                   disabled={assistant.length==0?true:false}
+                  
                     onPress={HandleContinue}
                     activeOpacity={0.85}
                     style={styles.continueButton}
