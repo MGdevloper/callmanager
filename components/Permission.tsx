@@ -2,9 +2,11 @@ import React, { useEffect, useRef } from 'react';
 import Toast from 'react-native-toast-message';
 
 import {
+  Alert,
   Animated,
   Easing,
   KeyboardAvoidingView,
+  Linking,
   Platform,
   ScrollView,
   StyleSheet,
@@ -16,6 +18,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import Video from 'react-native-video';
 import RemixIcon from 'react-native-remix-icon';
 import Contacts from 'react-native-contacts';
+import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 function Permission() {
   const scaleAnim = useRef(new Animated.Value(0.5)).current;
   useEffect(() => {
@@ -44,38 +47,88 @@ function Permission() {
     ).start();
   }, [scaleAnim]);
 
-  async function HandleContinue() {
-    try {
-      const permission = await Contacts.requestPermission();
 
-      if (permission === 'authorized' || permission === 'limited') {
-        Toast.show({
-          type: 'success',
-          text1: 'Contacts access granted',
-          text2: 'You can now call contacts by name.',
-        });
-        return;
-      }
 
-      Toast.show({
-        type: 'error',
-        text1: 'Contacts access denied',
-        text2: 'Please allow contacts access to use voice calling.',
-      });
-    } catch {
-      Toast.show({
-        type: 'error',
-        text1: 'Could not request contacts',
-        text2: 'Please try again from app permissions.',
-      });
-    }
+  useEffect(() => {
+    (async () => {
+
+      await takepermissions()
+    })()
+
+
+  }, [])
+  async function checkpermissions() {
+    const contect_read_permission = PERMISSIONS.ANDROID.READ_CONTACTS
+    const contect_write_permission = PERMISSIONS.ANDROID.WRITE_CONTACTS
+    const call_permission = PERMISSIONS.ANDROID.CALL_PHONE
+    const microphone_permission = PERMISSIONS.ANDROID.RECORD_AUDIO
+    let result = await Promise.all([check(contect_read_permission), check(contect_write_permission), check(call_permission), check(microphone_permission)])
+
+    let permisssionName = ["contact_read", "contact_write", "call_permission", "microphone_permission"]
+    let res = permisssionName.map((v, i) => {
+      let name = permisssionName[i]
+
+      return { [name]: result[i] }
+
+    })
+
+    console.log("permissionchecked:", res);
+    return res
+
   }
+
+  async function takepermissions() {
+
+    await request(PERMISSIONS.ANDROID.WRITE_CONTACTS)
+    await request(PERMISSIONS.ANDROID.READ_CONTACTS)
+    await request(PERMISSIONS.ANDROID.RECORD_AUDIO)
+    await request(PERMISSIONS.ANDROID.CALL_PHONE)
+
+
+  }
+  async function HandleContinue() {
+
+
+
+    let result2 = await checkpermissions()
+
+
+
+
+
+    let denide_permissions = result2.filter((o) => Object.values(o)[0] == "denied")
+
+
+
+    if (denide_permissions.length == 0) {
+      console.log("go to the next page");
+      return
+    }
+
+    console.log('====================================');
+    console.log("HERE next");
+    console.log('====================================');
+
+    Alert.alert(
+      'Permission Required',
+      'This feature needs all permission. Please go to Settings and enable all.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Open Settings', onPress: () => Linking.openSettings() },
+      ],
+      { cancelable: true }
+    );
+
+
+
+  }
+
 
   return (
     <SafeAreaProvider>
 
       <View style={styles.root}>
-        
+
 
         <SafeAreaView style={styles.safeArea}>
           <KeyboardAvoidingView

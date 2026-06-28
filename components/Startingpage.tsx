@@ -74,15 +74,6 @@ function Startingpage({navigation}:any) {
     <SafeAreaProvider>
 
       <View style={styles.root}>
-        <Video
-          source={require('../assets/background/silk.mp4')}
-          style={styles.backgroundVideo}
-          resizeMode="cover"
-          repeat
-          muted
-          paused={false}
-        
-        />
 
         <SafeAreaView style={styles.safeArea}>
           <KeyboardAvoidingView
@@ -189,6 +180,9 @@ const styles = StyleSheet.create({
     paddingBottom: 28,
   },
   statusRow: {
+    position:"absolute",
+    top:15,
+    left:12,
     flexDirection: 'row',
     alignItems: 'center',
   },
