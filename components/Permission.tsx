@@ -19,7 +19,7 @@ import Video from 'react-native-video';
 import RemixIcon from 'react-native-remix-icon';
 import Contacts from 'react-native-contacts';
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
-function Permission() {
+function Permission({navigation}:any) {
   const scaleAnim = useRef(new Animated.Value(0.5)).current;
   useEffect(() => {
     Animated.loop(
@@ -51,8 +51,16 @@ function Permission() {
 
   useEffect(() => {
     (async () => {
+      let permissions=await checkpermissions()
 
+      let result=permissions.filter((p)=>Object.values(p)[0]=="denied")
+      console.log(result);
+      
+      if( result.length==0){
+        navigation.navigate("Home")
+      }
       await takepermissions()
+
     })()
 
 
@@ -101,14 +109,12 @@ function Permission() {
 
 
     if (denide_permissions.length == 0) {
-      console.log("go to the next page");
+      
+      navigation.navigate("Home")
       return
     }
 
-    console.log('====================================');
-    console.log("HERE next");
-    console.log('====================================');
-
+    
     Alert.alert(
       'Permission Required',
       'This feature needs all permission. Please go to Settings and enable all.',

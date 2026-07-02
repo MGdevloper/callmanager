@@ -6,13 +6,14 @@ import Startingpage from './components/Startingpage';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from './components/CustomeToast';
 import Permission from './components/Permission';
+import Homepage from './components/Homepage';
 const Stack = createNativeStackNavigator()
 function App() {
 
   return (
     <>
       <NavigationContainer  >
-        <Stack.Navigator initialRouteName='Starting'>
+        <Stack.Navigator initialRouteName='Home'>
           <Stack.Screen
             options={{ headerShown: false }}
             name='Starting'
@@ -25,6 +26,12 @@ function App() {
               component={Permission}
           />
 
+        <Stack.Screen
+        name='Home'
+        component={Homepage}
+        options={{headerShown:false}}
+        
+        />
 
 
         </Stack.Navigator>
